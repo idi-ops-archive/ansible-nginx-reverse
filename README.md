@@ -17,7 +17,7 @@ Each endpoint should be configured with the following variables:
 
   * `name`: endpoint identifier string
   * `domains`: list of domains to be served
-  * `lb_method`: optional load balancing method (hash, ip_hash, least_conn or least_time - see [upstream module documentation](http://nginx.org/en/docs/http/ngx_http_upstream_module.html))
+  * `lb_method`: optional load balancing method (hash, ip_hash, or least_conn - see [upstream module documentation](http://nginx.org/en/docs/http/ngx_http_upstream_module.html))
   * `backends`: list of backend servers (see accepted [format](http://nginx.org/en/docs/http/ngx_http_upstream_module.html#server))
 
 Example Playbook
@@ -36,5 +36,5 @@ Example Playbook
           backends:
             - localhost:8080 weight=2
             - localhost:8081
-          lb_method: least_time
+          lb_method: least_conn
 ```    
