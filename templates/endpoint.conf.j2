@@ -2,7 +2,7 @@
 
 upstream {{ item.name }} {
     {% if item.lb_method is defined %}
-    {{ item.lb_method }}
+    {{ item.lb_method }};
     {% endif %}
     {% for backend in item.backends %}
     server {{ backend }};
@@ -11,6 +11,11 @@ upstream {{ item.name }} {
 
 server {
     listen {{ nginx_reverse_port }};
+    {% if item.ssl_enabled |default(false) %}
+    listen {{ nginx_reverse_ssl_port}} ssl;
+    ssl_certificate {{ item.ssl_certificate }};
+    ssl_certificate_key {{ item.ssl_certificate_key }};
+    {% endif %}
     server_name {{ item.domains|join(' ') }};
     location / {
         proxy_set_header   X-Real-IP $remote_addr;
