@@ -1,9 +1,9 @@
 ---
 
-- name: deploy reverse proxy configurations
+- name: Deploy endpoints
   template:
-    src: reverse-proxy.conf.j2
-    dest: "{{ nginx_reverse_proxy_config_directory }}/{{ item.config_name }}.conf"
-  with_items: nginx_reverse_proxy_proxies
+    src: endpoint.conf.j2
+    dest: "/etc/nginx/conf.d/{{ item.name }}.conf"
+  with_items: nginx_reverse_endpoints
   notify:
     - restart nginx
