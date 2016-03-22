@@ -4,6 +4,6 @@
   template:
     src: endpoint.conf.j2
     dest: "/etc/nginx/conf.d/{{ item.name }}.conf"
-  with_items: nginx_reverse_endpoints
+  with_items: '{{ nginx_reverse_endpoints }}'
   notify:
     - restart nginx
