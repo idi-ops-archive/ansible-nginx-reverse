@@ -9,6 +9,12 @@ upstream {{ item.name }} {
     {% endfor %}
 }
 
+{% if nginx_reverse_enable_rate_limiting %}
+limit_req_zone $binary_remote_addr zone=perip:{{ nginx_reverse_rate_limiting_zone_size }}m rate={{ nginx_reverse_rate_limiting_requests_per_second }}r/s;
+limit_req_log_level error;
+limit_req_status 429;
+{% endif %}
+
 {% if item.ssl_enabled |default(false) %}
 server {
     listen 80;
@@ -37,8 +43,13 @@ server {
     server_name {{ item.domains|join(' ') }};
 
     location / {
-        proxy_set_header   X-Real-IP $remote_addr;
-        proxy_set_header   Host      $http_host;
+        {% if nginx_reverse_enable_rate_limiting %}
+        limit_req zone=perip burst={{ nginx_reverse_rate_limiting_requests_burst_size }};
+        {% endif %}
+        
+        proxy_set_header   X-Real-IP       $remote_addr;
+        proxy_set_header   Host            $http_host;
+        proxy_set_header   X-Forwarded-For $proxy_add_x_forwarded_for;
         proxy_pass         {{ item.backend_protocol | default('http') }}://{{ item.name }};
     }
 }
