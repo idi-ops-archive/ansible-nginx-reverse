@@ -23,7 +23,7 @@ Each endpoint should be configured with the following variables:
     * `ssl_enabled`: set to `true` to enable SSL. These variables must also be specified if SSL is enabled:
       * `ssl_certificate`: path to SSL certificate
       * `ssl_certificate_key`: path to SSL certificate key
-
+  * Additional directives can be added under `directives`. Be careful.
 
 Example Playbook
 ----------------
@@ -48,6 +48,9 @@ Example Playbook
           backends:
             - localhost:8083
             - localhost:8084
+          directives:
+            - 'client_max_body_size 128m'
+            - 'client_header_timeout 60s'
           ssl_enabled: true
           ssl_certificate: /etc/nginx/ssl/example-ssl.net.crt
           ssl_certificate_key: /etc/nginx/ssl/example-ssl.net.key
