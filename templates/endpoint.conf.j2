@@ -40,6 +40,10 @@ server {
         {% if nginx_reverse_enable_rate_limiting %}
         limit_req zone=perip burst={{ nginx_reverse_rate_limiting_requests_burst_size }};
         {% endif %}
+
+        {% if item.max_body_size %}
+        client_max_body_size {{ item.max_body_size }};
+        {% endif %}
         
         proxy_set_header   X-Real-IP       $remote_addr;
         proxy_set_header   Host            $http_host;
