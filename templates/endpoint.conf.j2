@@ -1,5 +1,3 @@
-# {{ ansible_managed }}
-
 upstream {{ item.name }} {
     {% if item.lb_method is defined %}
     {{ item.lb_method }};
