@@ -1,0 +1,124 @@
+---
+
+- hosts: localhost
+  connection: local
+  become: true
+  vars:
+    - default_letsencrypt_control_url: "letsencrypt.host.test.org:7654"
+
+    - nginx_reverse_endpoints:
+
+      # Legacy backends tests
+      - name: project-production-rbmm
+        ssl_enabled: yes
+        ssl_certificate: /etc/nginx/ssl/test.org.crt
+        ssl_certificate_key: /etc/nginx/ssl/test.org.key
+        domains:
+          - rbmm.test.org
+        backends:
+          - 0029.backend1.test.org:38078
+    
+      - name: project-production-terms-dict
+        ssl_enabled: yes
+        ssl_certificate: /etc/nginx/ssl/test.org.crt
+        ssl_certificate_key: /etc/nginx/ssl/test.org.key
+        domains:
+          - terms.test.org.crt
+        backends:
+          - 0031.backend1.test.org:4896
+    
+      - name: project-production-unified-listing
+        ssl_enabled: yes
+        ssl_certificate: /etc/nginx/ssl/test.org.crt
+        ssl_certificate_key: /etc/nginx/ssl/test.org.key
+        domains:
+          - ul.test.org
+        backends:
+          - 0032.backend1.test.org:4896
+    
+      - name: project-production-issues
+        ssl_enabled: yes
+        ssl_certificate: /etc/nginx/ssl/test.org.crt
+        ssl_certificate_key: /etc/nginx/ssl/test.org.key
+        directives:
+          - 'client_max_body_size 10m'
+        domains:
+          - issues.test.org
+        backend_protocol: https
+        backends:
+          - 0017.backend1.test.org:443
+    
+      - name: project-staging-issues
+        ssl_enabled: yes
+        ssl_certificate: /etc/nginx/ssl/test.org.crt
+        ssl_certificate_key: /etc/nginx/ssl/test.org.key
+        directives:
+          - 'client_max_body_size 10m'
+        domains:
+          - staging-issues.test.org
+        backends:
+          - 0026.backend1.test.org:80
+    
+      - name: project-production-wiki
+        ssl_enabled: yes
+        ssl_certificate: /etc/nginx/ssl/test.org.crt
+        ssl_certificate_key: /etc/nginx/ssl/test.org.key
+        domains:
+          - wiki.test.org
+        backends:
+          - 0026.backend1.test.org:80
+    
+      - name: project-production-pad
+        ssl_enabled: yes
+        ssl_certificate: /etc/nginx/ssl/test.org.crt
+        ssl_certificate_key: /etc/nginx/ssl/test.org.key
+        domains:
+          - pad.test.org
+        backends:
+          - 0026.backend1.test.org:80
+
+      # Test with letsencrypt provider
+      - name: project-production-letsencrypt
+        ssl_enabled: yes
+        ssl_provider: letsencrypt
+        ssl_certificate: /etc/nginx/ssl/test.org.crt
+        ssl_certificate_key: /etc/nginx/ssl/test.org.key
+        domains:
+          - ssl-no-letsencrypt.test.org
+        backends:
+          - 0026.backend1.test.org:80
+
+
+  pre_tasks:
+    - name: Create directory /etc/nginx/ssl
+      file:
+        path: /etc/nginx/ssl
+        state: directory
+    - name: Create dummy SSL certificates
+      command: >
+        openssl req -new -nodes -x509
+        -subj "/C=US/ST=Someone/L=Somewhere/O=CERT/CN=${ansible_fqdn}"
+        -days 3650
+        -keyout /etc/nginx/ssl/test.org.key
+        -out /etc/nginx/ssl/test.org.crt
+        -extensions v3_ca
+        creates=/etc/nginx/ssl/test.org.crt
+    - name: Create DH pem file
+      command: openssl dhparam -out /etc/nginx/ssl/dhparams.pem 2048 creates=/etc/nginx/ssl/dhparams.pem
+
+  roles:
+    - facts
+    - nginx-common
+    - nginx-reverse
+
+  post_tasks:
+    - name: Test if 80 port is listenning
+      wait_for: host=localhost port=80
+    - name: Test if 443 port is listenning
+      wait_for: host=localhost port=443
+    - name: Test config files
+      assert:
+        that:
+          - "lookup('file', '/etc/nginx/conf.d/{{ item.name }}.conf') == lookup('file', 'assets/{{ item.name }}.conf')"
+        msg: "/etc/nginx/conf.d/{{ item.name }}.conf doesn't match with assets/{{ item.name }}.conf"
+      with_items: "{{ nginx_reverse_endpoints }}"
