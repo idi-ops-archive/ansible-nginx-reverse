@@ -1,7 +1,0 @@
----
-
-- name: Configure SELinux to permit outgoing connections
-  seboolean:
-    name: httpd_can_network_connect
-    state: yes
-    persistent: yes
