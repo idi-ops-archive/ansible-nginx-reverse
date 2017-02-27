@@ -8,7 +8,5 @@ galaxy_info:
     versions:
     - 7
 dependencies:
-  - src: https://github.com/gtirloni/ansible-nginx-common
-    scm: git
-    version: molecule
+  - src: https://github.com/idi-ops/ansible-nginx-common
     name: ansible-nginx-common
