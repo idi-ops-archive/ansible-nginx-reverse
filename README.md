@@ -21,8 +21,9 @@ Each endpoint should be configured with the following variables:
   * `backends`: list of backend servers (see accepted [format](http://nginx.org/en/docs/http/ngx_http_upstream_module.html#server))
   * SSL can optionally be configured:
     * `ssl_enabled`: set to `true` to enable SSL. These variables must also be specified if SSL is enabled:
-      * `ssl_certificate`: path to SSL certificate
-      * `ssl_certificate_key`: path to SSL certificate key
+    * `ssl_provider`: leave undefined or set to `letsencrypt` to add additional configuration required for Let's Encrypt
+    * `ssl_certificate`: path to SSL certificate
+    * `ssl_certificate_key`: path to SSL certificate key
     * `letsencrypt_control_url`: hostname:port of the host where certbot will 
     renew or generate the certificates using ACME protocol.
   * Additional directives can be added under `directives`. Be careful.

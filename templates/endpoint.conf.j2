@@ -17,9 +17,11 @@ limit_req_status 429;
 server {
     listen 80;
     server_name {{ item.domains|join(' ') }};
+    {%- if item.ssl_enforce | default(false) -%}
     location / {
         return 301 https://$host$request_uri;
     }
+    {% endif %}
     {% if item.ssl_provider | default('') == 'letsencrypt' %}
     location /.well-known/acme-challenge/ {
         proxy_pass http://{{ item.letsencrypt_control_url | default(default_letsencrypt_control_url) }}/.well-known/acme-challenge/;

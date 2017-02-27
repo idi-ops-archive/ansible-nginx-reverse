@@ -21,6 +21,7 @@ nginx_reverse_endpoints: []
 #  - name: endpoint-1
 #    ssl_enabled: yes
 #    ssl_provider: letsencrypt
+#    ssl_enforce: no  # redirects HTTP requests to HTTPS
 #    ssl_certificate: /etc/nginx/ssl/example.com-cert.pem
 #    ssl_certificate_key: /etc/nginx/ssl/example.com-key.pem
 #    domains:
