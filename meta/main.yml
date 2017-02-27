@@ -1,12 +1,14 @@
 ---
 galaxy_info:
-  author: Inclusive Design Research Centre
   description: Configured Nginx to act as reverse proxy
-  company: OCAD University
   license: MIT
-  min_ansible_version: 1.9.4
+  min_ansible_version: 2.2
   platforms:
   - name: EL
     versions:
     - 7
-dependencies: []
+dependencies:
+  - src: https://github.com/gtirloni/ansible-nginx-common
+    scm: git
+    version: molecule
+    name: ansible-nginx-common
