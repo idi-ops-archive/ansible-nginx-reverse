@@ -1,0 +1,5 @@
+- src: https://github.com/idi-ops/ansible-nginx-common.git
+  name: nginx-common
+
+- src: https://github.com/idi-ops/ansible-facts.git
+  name: facts
