@@ -1,10 +1,15 @@
 ---
-# tasks file for ansible-nginx-reverse-proxy
 
-- include: configure.yml
-  tags:
-    - configure
+- name: Configure SELinux to permit outgoing connections
+  seboolean:
+    name: httpd_can_network_connect
+    state: yes
+    persistent: yes
 
-- include: deploy.yml
-  tags:
-    - deploy
+- name: Deploy endpoints
+  template:
+    src: endpoint.conf.j2
+    dest: "/etc/nginx/conf.d/{{ item.name }}.conf"
+  with_items: '{{ nginx_reverse_endpoints }}'
+  notify:
+    - restart nginx
