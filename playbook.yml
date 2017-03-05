@@ -1,0 +1,14 @@
+- hosts: all
+
+  vars:
+    nginx_reverse_endpoints:
+      - name: test-endpoint
+        ssl_enabled: no
+        domains:
+          - localhost
+        backends:
+          - localhost:8080
+
+  roles:
+    - ansible-nginx-common
+    - ansible-nginx-reverse
