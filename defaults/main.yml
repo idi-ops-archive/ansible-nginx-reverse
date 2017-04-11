@@ -3,9 +3,10 @@
 nginx_reverse_port: 80
 nginx_reverse_ssl_port: 443
 
-nginx_reverse_enable_rate_limiting: false
+# Enable rate limiting
+nginx_reverse_rate_limiting_enabled: false
 
-# The size in megabytes of a shared memory zone that is used to log IP addresses that access the
+# The size in megabytes of a shared memory zone that is used to log IP addresses that access the 
 # rate limited URL.
 nginx_reverse_rate_limiting_zone_size: 10
 
@@ -16,16 +17,3 @@ nginx_reverse_rate_limiting_requests_per_second: 1
 # If already throttled clients exceed this requests burst size limit then their requests will not
 # be fulfilled and 429 HTTP status codes will be returned.
 nginx_reverse_rate_limiting_requests_burst_size: 5
-
-nginx_reverse_endpoints: []
-#  - name: endpoint-1
-#    ssl_enabled: yes
-#    ssl_provider: letsencrypt
-#    ssl_enforce: no  # redirects HTTP requests to HTTPS
-#    ssl_certificate: /etc/nginx/ssl/example.com-cert.pem
-#    ssl_certificate_key: /etc/nginx/ssl/example.com-key.pem
-#    domains:
-#      - example.com
-#      - www.example.com
-#    backends:
-#      - server-0.example.com:8080

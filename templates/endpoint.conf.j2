@@ -1,3 +1,9 @@
+{% if item.rate_limiting_enabled | default(nginx_reverse_rate_limiting_enabled) -%}
+limit_req_zone $binary_remote_addr zone=perip:{{ item.rate_limiting_zone_size | default(nginx_reverse_rate_limiting_zone_size) }}m rate={{ item.rate_limiting_requests_per_second | default(nginx_reverse_rate_limiting_requests_per_second) }}r/s;
+limit_req_log_level error;
+limit_req_status 429;
+{% endif %}
+
 upstream {{ item.name }} {
     {% if item.lb_method is defined %}
     {{ item.lb_method }};
@@ -7,26 +13,18 @@ upstream {{ item.name }} {
     {% endfor %}
 }
 
-{% if nginx_reverse_enable_rate_limiting %}
-limit_req_zone $binary_remote_addr zone=perip:{{ nginx_reverse_rate_limiting_zone_size }}m rate={{ nginx_reverse_rate_limiting_requests_per_second }}r/s;
-limit_req_log_level error;
-limit_req_status 429;
-{% endif %}
-
 {% if item.ssl_enabled |default(false) %}
 server {
     listen 80;
     server_name {{ item.domains|join(' ') }};
-    {%- if item.ssl_enforce | default(false) -%}
     location / {
         return 301 https://$host$request_uri;
     }
-    {% endif %}
     {% if item.ssl_provider | default('') == 'letsencrypt' %}
     location /.well-known/acme-challenge/ {
         proxy_pass http://{{ item.letsencrypt_control_url | default(default_letsencrypt_control_url) }}/.well-known/acme-challenge/;
     }
-    {%- endif %}
+    {% endif %}
 }
 {% endif %}
 
@@ -41,6 +39,10 @@ server {
     ssl_certificate_key {{ item.ssl_certificate_key }};
     {% endif %}
 
+    {% if item.rate_limiting_enabled | default(nginx_reverse_rate_limiting_enabled) -%}
+    limit_req zone=perip burst={{ item.rate_limiting_requests_burst_size | default(nginx_reverse_rate_limiting_requests_burst_size) }};
+    {%- endif %}
+
     {% if item.directives is defined %}
     {%- for entry in item.directives %}
     {{- entry }};
@@ -50,10 +52,6 @@ server {
     server_name {{ item.domains|join(' ') }};
 
     location / {
-        {% if nginx_reverse_enable_rate_limiting %}
-        limit_req zone=perip burst={{ nginx_reverse_rate_limiting_requests_burst_size }};
-        {% endif %}
-        
         proxy_set_header   X-Real-IP         $remote_addr;
         proxy_set_header   Host              $http_host;
         proxy_set_header   X-Forwarded-For   $proxy_add_x_forwarded_for;
