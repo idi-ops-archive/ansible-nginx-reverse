@@ -7,6 +7,3 @@ galaxy_info:
   - name: EL
     versions:
     - 7
-dependencies:
-  - src: https://github.com/idi-ops/ansible-nginx-common
-    name: ansible-nginx-common
