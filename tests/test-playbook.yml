@@ -17,7 +17,7 @@
           - rbmm.test.org
         backends:
           - 0029.backend1.test.org:38078
-    
+
       - name: project-production-terms-dict
         ssl_enabled: yes
         ssl_certificate: /etc/nginx/ssl/test.org.crt
@@ -26,7 +26,7 @@
           - terms.test.org.crt
         backends:
           - 0031.backend1.test.org:4896
-    
+
       - name: project-production-unified-listing
         ssl_enabled: yes
         ssl_certificate: /etc/nginx/ssl/test.org.crt
@@ -35,7 +35,7 @@
           - ul.test.org
         backends:
           - 0032.backend1.test.org:4896
-    
+
       - name: project-production-issues
         ssl_enabled: yes
         ssl_certificate: /etc/nginx/ssl/test.org.crt
@@ -47,7 +47,7 @@
         backend_protocol: https
         backends:
           - 0017.backend1.test.org:443
-    
+
       - name: project-staging-issues
         ssl_enabled: yes
         ssl_certificate: /etc/nginx/ssl/test.org.crt
@@ -58,7 +58,7 @@
           - staging-issues.test.org
         backends:
           - 0026.backend1.test.org:80
-    
+
       - name: project-production-wiki
         ssl_enabled: yes
         ssl_certificate: /etc/nginx/ssl/test.org.crt
@@ -67,7 +67,7 @@
           - wiki.test.org
         backends:
           - 0026.backend1.test.org:80
-    
+
       - name: project-production-pad
         ssl_enabled: yes
         ssl_certificate: /etc/nginx/ssl/test.org.crt

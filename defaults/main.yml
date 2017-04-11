@@ -3,7 +3,8 @@
 nginx_reverse_port: 80
 nginx_reverse_ssl_port: 443
 
-nginx_reverse_enable_rate_limiting: false
+# Enable rate limiting
+nginx_reverse_rate_limiting_enabled: false
 
 # The size in megabytes of a shared memory zone that is used to log IP addresses that access the 
 # rate limited URL.
